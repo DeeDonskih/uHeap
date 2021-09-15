@@ -6,7 +6,7 @@
  *  All rights reserved
  */
 
-#include "uheap_opt.h"
+#include "../uheap_opt.h"
 
 #ifndef UHEAP_DEBUG
     #ifdef CMSIS_DEVICE_HEADER_FILE
