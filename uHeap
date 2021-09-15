@@ -1,0 +1,15 @@
+/**
+ * @file uHeap
+ * @author Dmitry Donskikh (deedonskihdev@gmail.com)
+ * @brief Dynamic memory management, implemented as singleton static linked object
+ * @version 0.1
+ * @date 2021-09-15
+ * 
+ * Copyright © 2018-2021 Dmitriy Donskikh
+ * All rights reserved.
+ * 
+ */
+
+/* This header is for include and documentation */
+#pragma once
+#include <./heap/uheap.h>
