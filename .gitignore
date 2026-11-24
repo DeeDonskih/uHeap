@@ -30,3 +30,31 @@
 *.exe
 *.out
 *.app
+
+# Build directories
+build-*/
+cmake-*/
+build/
+
+# General macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# InteliG
+.idea/
+
+# Qt Creator stuff
+*.txt.user
+
+# Visual Studio Code
+.vscode/*
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+
+# Temporary
+.temp/

@@ -4,10 +4,10 @@
  * @brief This file provides malloc series function using "uHeap" - dynamic memory management
  * @version 0.1
  * @date 2020-05-15
- * 
+ *
  * Copyright © 2018-2021 Dmitriy Donskikh
  * All rights reserved.
- * 
+ *
  */
 
 /*
@@ -29,38 +29,36 @@
  * @note You must add "-Xlinker --wrap=malloc" linker option
  * @param size
  */
-void *__wrap_malloc(size_t size) {
-  return ufw_heap_alloc(size);
+void* __wrap_malloc(size_t size) { return ufw_heap_alloc(size); }
+
+void free(void* ptr) { ufw_heap_free(ptr); }
+
+void* calloc(size_t num, size_t size)
+{
+  void* temp = ufw_heap_alloc(num * size);
+  memset(temp, 0x00, num * size);
+  return temp;
 }
 
-void free(void *ptr)
+void* realloc(void* ptr, size_t new_size)
 {
+  if (new_size == 0) {
+    return NULL;
+  }
+  if (new_size > ufw_heap_getfreebytes()) {
+    errno = ENOMEM;
+    return NULL;
+  }
+  void* temp = ufw_heap_alloc(new_size);
+  if (!temp) {
+    return NULL;
+  }
+  memcpy(temp, ptr, new_size);
   ufw_heap_free(ptr);
+  return temp;
 }
 
-void *calloc(size_t num, size_t size)
-{
-    void *temp = ufw_heap_alloc(num * size);
-    memset(temp, 0x00, num * size);
-    return temp;
-}
-
-void *realloc(void *ptr, size_t new_size)
-{
-    if (new_size == 0) { return NULL; }
-    if (new_size > ufw_heap_getfreebytes())
-    {
-        errno = ENOMEM;
-        return NULL;
-    }
-    void *temp = ufw_heap_alloc(new_size);
-    if (!temp) { return NULL; }
-    memcpy(temp, ptr, new_size);
-    ufw_heap_free(ptr);
-    return temp;
-}
-
-    #ifdef UHEAP_WRAPS_NEWLIB_MALLOC
+#ifdef UHEAP_WRAPS_NEWLIB_MALLOC
 
 /**
  * @fn void __wrap__malloc_r*(struct _reent*, size_t)
@@ -69,16 +67,16 @@ void *realloc(void *ptr, size_t new_size)
  * @param reent
  * @param size
  */
-extern void *__wrap__malloc_r(struct _reent *reent, size_t size) { return ufw_heap_alloc(size); }
+extern void* __wrap__malloc_r(struct _reent* reent, size_t size) { return ufw_heap_alloc(size); }
 
-void __wrap__free_r(struct _reent *reent, void *ptr) { free(ptr); }
+void __wrap__free_r(struct _reent* reent, void* ptr) { free(ptr); }
 
-void *__wrap__realloc_r(struct _reent *reent, void *ptr, size_t size) { return realloc(ptr, size); }
+void* __wrap__realloc_r(struct _reent* reent, void* ptr, size_t size) { return realloc(ptr, size); }
 
-    /*
-     *
-     */
-    #endif /* UHEAP_WRAPS_NEWLIB_MALLOC */
+/*
+ *
+ */
+#endif /* UHEAP_WRAPS_NEWLIB_MALLOC */
 
 size_t getFreeHeap() { return ufw_heap_getfreebytes(); }
 
